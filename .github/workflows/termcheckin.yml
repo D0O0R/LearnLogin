@@ -1,0 +1,36 @@
+name: Termcheckin
+
+on:
+  schedule:
+    - cron: "0 17 * * *"
+  workflow_dispatch:
+
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run 
+        env:
+          BIN_URL: ${{ secrets.BIN_URL }}
+        run: |
+          curl -L -o termcheckin.exe $BIN_URL
+          ./termcheckin.exe
+          TIME=$(TZ=Asia/Shanghai date "+%Y-%m-%d %H:%M")
+          echo "$TIME" | cat - time.log > temp && mv temp time.log
+
+      - name: Commit
+        run: |
+          git config --global user.email D0OR@pm.me
+          git config --global user.name D0O0R
+          git add .
+          git commit -m "learn" -a
+      
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
