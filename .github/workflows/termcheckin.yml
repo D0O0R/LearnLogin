@@ -20,8 +20,7 @@ jobs:
         run: |
           curl -L -o termcheckin.exe $env:BIN_URL
           ./termcheckin.exe
-          TIME=$(TZ=Asia/Shanghai date "+%Y-%m-%d %H:%M")
-          echo "$TIME" | cat - time.log > temp && mv temp time.log
+          echo "success" | cat - time.log > temp && mv temp time.log
 
       - name: Commit
         run: |
