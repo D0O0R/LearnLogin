@@ -20,8 +20,21 @@ jobs:
         run: |
           curl -L -o termcheckin.exe $env:BIN_URL
           ./termcheckin.exe
-          echo "success" | cat - time.log > temp && mv temp time.log
 
+          Remove-Item -Path './termcheckin.exe' -Force
+          
+          # Read the current content of time.log
+          $existingContent = Get-Content -Path 'time.log'
+
+          # Add "success" to the content and write it to temp file
+          "success" | Add-Content -Path 'temp.log'
+          
+          # Append the existing content to temp.log
+          $existingContent | Add-Content -Path 'temp.log'
+          
+          # Move the temp.log to overwrite time.log
+          Move-Item -Path 'temp.log' -Destination 'time.log' -Force
+          
       - name: Commit
         run: |
           git config --global user.email D0OR@pm.me
